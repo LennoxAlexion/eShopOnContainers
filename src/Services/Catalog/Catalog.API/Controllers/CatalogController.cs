@@ -268,14 +268,26 @@ namespace Microsoft.eShopOnContainers.Services.Catalog.API.Controllers
                 Description = product.Description,
                 Name = product.Name,
                 PictureFileName = product.PictureFileName,
-                Price = product.Price
+                Price = product.Price,
+                Id = product.Id,
+                AvailableStock = product.AvailableStock,
+                PictureUri = product.PictureUri,
             };
 
-            _catalogContext.CatalogItems.Add(item);
+            var catalogItem = await _catalogContext.CatalogItems.SingleOrDefaultAsync(i => i.Id == product.Id);
+            
+            if (catalogItem == null) //Create the item if it doesn't exist otherwise update it.
+            {
+                _catalogContext.CatalogItems.Add(item);   
+            }
+            else
+            {
+                _catalogContext.CatalogItems.Update(item);
+            }
 
             await _catalogContext.SaveChangesAsync();
 
-            return CreatedAtAction(nameof(ItemByIdAsync), new { id = item.Id }, null);
+            return CreatedAtAction(nameof(ItemByIdAsync), new { id = item.Id }, item);
         }
 
         //DELETE api/v1/[controller]/id
