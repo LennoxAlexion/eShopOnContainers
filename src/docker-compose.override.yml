@@ -113,7 +113,7 @@ services:
       - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
       - UseCustomizationData=True
       - AzureServiceBusEnabled=False
-      - CheckUpdateTime=30000
+      - CheckUpdateTime=10
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - UseLoadTest=${USE_LOADTEST:-False}
@@ -136,8 +136,8 @@ services:
       - EventBusPassword=${ESHOP_SERVICE_BUS_PASSWORD}
       - UseCustomizationData=True
       - AzureServiceBusEnabled=False
-      - CheckUpdateTime=30000
-      - GracePeriodTime=1
+      - CheckUpdateTime=10
+      - GracePeriodTime=0
       - ApplicationInsights__InstrumentationKey=${INSTRUMENTATION_KEY}
       - OrchestratorType=${ORCHESTRATOR_TYPE}
       - UseLoadTest=${USE_LOADTEST:-False}

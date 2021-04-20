@@ -37,7 +37,7 @@ namespace Ordering.BackgroundTasks.Services
 
                 CheckConfirmedGracePeriodOrders();
 
-                await Task.Delay(_settings.CheckUpdateTime, stoppingToken);
+                // await Task.Delay(_settings.CheckUpdateTime, stoppingToken);
             }
 
             _logger.LogDebug("GracePeriodManagerService background task is stopping.");
