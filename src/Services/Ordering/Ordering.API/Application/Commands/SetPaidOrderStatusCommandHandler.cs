@@ -35,7 +35,7 @@ namespace Ordering.API.Application.Commands
                 return false;
             }
 
-            orderToUpdate.SetPaidStatus();
+            // orderToUpdate.SetPaidStatus();
             return await _orderRepository.UnitOfWork.SaveEntitiesAsync(cancellationToken);
         }
     }

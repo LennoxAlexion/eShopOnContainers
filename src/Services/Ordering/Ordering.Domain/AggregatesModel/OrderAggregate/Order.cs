@@ -124,6 +124,8 @@ namespace Microsoft.eShopOnContainers.Services.Ordering.Domain.AggregatesModel.O
 
                 _orderStatusId = OrderStatus.StockConfirmed.Id;
                 _description = "All the items were confirmed with available stock.";
+
+                SetPaidStatus();
             }
         }
 
