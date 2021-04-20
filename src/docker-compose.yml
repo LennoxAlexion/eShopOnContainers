@@ -32,7 +32,7 @@ services:
       dockerfile: Services/Basket/Basket.API/Dockerfile
     depends_on:
       - basketdata
-      - identity-api
+      # - identity-api
       - rabbitmq
 
   catalog-api:
@@ -89,7 +89,7 @@ services:
     depends_on:
       - nosqldata
       - sqldata
-      - identity-api
+      # - identity-api
       - rabbitmq
       - ordering-api
       - catalog-api
@@ -103,7 +103,7 @@ services:
     depends_on:
       - nosqldata
       - sqldata
-      - identity-api
+      # - identity-api
       - rabbitmq
       - ordering-api
       - catalog-api
@@ -117,7 +117,7 @@ services:
     depends_on:
       - nosqldata
       - sqldata
-      - identity-api
+      # - identity-api
       - rabbitmq
       - ordering-api
       - catalog-api

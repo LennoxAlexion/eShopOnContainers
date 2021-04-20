@@ -20,7 +20,6 @@ using Microsoft.eShopOnContainers.Services.Basket.API.Infrastructure.Repositorie
 using Microsoft.eShopOnContainers.Services.Basket.API.IntegrationEvents.EventHandling;
 using Microsoft.eShopOnContainers.Services.Basket.API.IntegrationEvents.Events;
 using Microsoft.eShopOnContainers.Services.Basket.API.Model;
-using Microsoft.eShopOnContainers.Services.Basket.API.Services;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Diagnostics.HealthChecks;
@@ -73,28 +72,7 @@ namespace Microsoft.eShopOnContainers.Services.Basket.API
                     Version = "v1",
                     Description = "The Basket Service HTTP API"
                 });
-
-                options.AddSecurityDefinition("oauth2", new OpenApiSecurityScheme
-                {
-                    Type = SecuritySchemeType.OAuth2,
-                    Flows = new OpenApiOAuthFlows()
-                    {
-                        Implicit = new OpenApiOAuthFlow()
-                        {
-                            AuthorizationUrl = new Uri($"{Configuration.GetValue<string>("IdentityUrlExternal")}/connect/authorize"),
-                            TokenUrl = new Uri($"{Configuration.GetValue<string>("IdentityUrlExternal")}/connect/token"),
-                            Scopes = new Dictionary<string, string>()
-                            {
-                                { "basket", "Basket API" }
-                            }
-                        }
-                    }
-                });
-
-                options.OperationFilter<AuthorizeCheckOperationFilter>();
             });
-
-            ConfigureAuthService(services);
 
             services.AddCustomHealthCheck(Configuration);
 
@@ -174,7 +152,6 @@ namespace Microsoft.eShopOnContainers.Services.Basket.API
             });
             services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
             services.AddTransient<IBasketRepository, RedisBasketRepository>();
-            services.AddTransient<IIdentityService, IdentityService>();
 
             services.AddOptions();
 
@@ -200,15 +177,12 @@ namespace Microsoft.eShopOnContainers.Services.Basket.API
                .UseSwaggerUI(setup =>
                {
                    setup.SwaggerEndpoint($"{ (!string.IsNullOrEmpty(pathBase) ? pathBase : string.Empty) }/swagger/v1/swagger.json", "Basket.API V1");
-                   setup.OAuthClientId("basketswaggerui");
-                   setup.OAuthAppName("Basket Swagger UI");
                });
 
             app.UseRouting();
             app.UseCors("CorsPolicy");
-            ConfigureAuth(app);
 
-            app.UseStaticFiles();
+            // app.UseStaticFiles();
 
             app.UseEndpoints(endpoints =>
             {

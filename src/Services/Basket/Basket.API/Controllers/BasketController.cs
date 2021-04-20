@@ -1,10 +1,8 @@
 ﻿using Basket.API.IntegrationEvents.Events;
 using Basket.API.Model;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.eShopOnContainers.BuildingBlocks.EventBus.Abstractions;
 using Microsoft.eShopOnContainers.Services.Basket.API.Model;
-using Microsoft.eShopOnContainers.Services.Basket.API.Services;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
@@ -14,24 +12,20 @@ using System.Threading.Tasks;
 namespace Microsoft.eShopOnContainers.Services.Basket.API.Controllers
 {
     [Route("api/v1/[controller]")]
-    [Authorize]
     [ApiController]
     public class BasketController : ControllerBase
     {
         private readonly IBasketRepository _repository;
-        private readonly IIdentityService _identityService;
         private readonly IEventBus _eventBus;
         private readonly ILogger<BasketController> _logger;
 
         public BasketController(
             ILogger<BasketController> logger,
             IBasketRepository repository,
-            IIdentityService identityService,
             IEventBus eventBus)
         {
             _logger = logger;
             _repository = repository;
-            _identityService = identityService;
             _eventBus = eventBus;
         }
 
@@ -55,9 +49,9 @@ namespace Microsoft.eShopOnContainers.Services.Basket.API.Controllers
         [HttpPost]
         [ProducesResponseType((int)HttpStatusCode.Accepted)]
         [ProducesResponseType((int)HttpStatusCode.BadRequest)]
-        public async Task<ActionResult> CheckoutAsync([FromBody] BasketCheckout basketCheckout, [FromHeader(Name = "x-requestid")] string requestId)
+        public async Task<ActionResult> CheckoutAsync([FromBody] BasketCheckout basketCheckout, [FromHeader(Name = "x-requestid")] string requestId, [FromHeader(Name = "userId")] String userIdStr)
         {
-            var userId = _identityService.GetUserIdentity();
+            var userId = userIdStr;
 
             basketCheckout.RequestId = (Guid.TryParse(requestId, out Guid guid) && guid != Guid.Empty) ?
                 guid : basketCheckout.RequestId;
@@ -69,7 +63,7 @@ namespace Microsoft.eShopOnContainers.Services.Basket.API.Controllers
                 return BadRequest();
             }
 
-            var userName = this.HttpContext.User.FindFirst(x => x.Type == ClaimTypes.Name).Value;
+            var userName = "bruce@wayne.com";
 
             var eventMessage = new UserCheckoutAcceptedIntegrationEvent(userId, userName, basketCheckout.City, basketCheckout.Street,
                 basketCheckout.State, basketCheckout.Country, basketCheckout.ZipCode, basketCheckout.CardNumber, basketCheckout.CardHolderName,

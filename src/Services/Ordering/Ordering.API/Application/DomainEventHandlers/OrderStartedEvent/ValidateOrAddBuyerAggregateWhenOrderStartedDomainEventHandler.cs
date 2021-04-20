@@ -1,5 +1,4 @@
 ﻿using MediatR;
-using Microsoft.eShopOnContainers.Services.Ordering.API.Infrastructure.Services;
 using Microsoft.eShopOnContainers.Services.Ordering.Domain.AggregatesModel.BuyerAggregate;
 using Microsoft.Extensions.Logging;
 using Ordering.API.Application.IntegrationEvents;
@@ -16,17 +15,14 @@ namespace Ordering.API.Application.DomainEventHandlers.OrderStartedEvent
     {
         private readonly ILoggerFactory _logger;
         private readonly IBuyerRepository _buyerRepository;
-        private readonly IIdentityService _identityService;
         private readonly IOrderingIntegrationEventService _orderingIntegrationEventService;
 
         public ValidateOrAddBuyerAggregateWhenOrderStartedDomainEventHandler(
             ILoggerFactory logger,
             IBuyerRepository buyerRepository,
-            IIdentityService identityService,
             IOrderingIntegrationEventService orderingIntegrationEventService)
         {
             _buyerRepository = buyerRepository ?? throw new ArgumentNullException(nameof(buyerRepository));
-            _identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
             _orderingIntegrationEventService = orderingIntegrationEventService ?? throw new ArgumentNullException(nameof(orderingIntegrationEventService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
         }

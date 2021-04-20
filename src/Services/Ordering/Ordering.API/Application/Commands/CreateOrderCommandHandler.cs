@@ -4,7 +4,6 @@
     using global::Ordering.API.Application.IntegrationEvents;
     using global::Ordering.API.Application.IntegrationEvents.Events;
     using MediatR;
-    using Microsoft.eShopOnContainers.Services.Ordering.API.Infrastructure.Services;
     using Microsoft.eShopOnContainers.Services.Ordering.Infrastructure.Idempotency;
     using Microsoft.Extensions.Logging;
     using System;
@@ -16,7 +15,6 @@
         : IRequestHandler<CreateOrderCommand, bool>
     {
         private readonly IOrderRepository _orderRepository;
-        private readonly IIdentityService _identityService;
         private readonly IMediator _mediator;
         private readonly IOrderingIntegrationEventService _orderingIntegrationEventService;
         private readonly ILogger<CreateOrderCommandHandler> _logger;
@@ -25,11 +23,9 @@
         public CreateOrderCommandHandler(IMediator mediator,
             IOrderingIntegrationEventService orderingIntegrationEventService,
             IOrderRepository orderRepository,
-            IIdentityService identityService,
             ILogger<CreateOrderCommandHandler> logger)
         {
             _orderRepository = orderRepository ?? throw new ArgumentNullException(nameof(orderRepository));
-            _identityService = identityService ?? throw new ArgumentNullException(nameof(identityService));
             _mediator = mediator ?? throw new ArgumentNullException(nameof(mediator));
             _orderingIntegrationEventService = orderingIntegrationEventService ?? throw new ArgumentNullException(nameof(orderingIntegrationEventService));
             _logger = logger ?? throw new ArgumentNullException(nameof(logger));
