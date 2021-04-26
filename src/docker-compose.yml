@@ -108,6 +108,7 @@ services:
       - ordering-api
       - catalog-api
       - basket-api
+      - ordering-backgroundtasks
 
   ordering-signalrhub:
     image: ${REGISTRY:-eshop}/ordering.signalrhub:${PLATFORM:-linux}-${TAG:-latest}
