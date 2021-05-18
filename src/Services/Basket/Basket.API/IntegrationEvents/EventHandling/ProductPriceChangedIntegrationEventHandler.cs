@@ -32,14 +32,14 @@ namespace Microsoft.eShopOnContainers.Services.Basket.API.IntegrationEvents.Even
 
                 foreach (var id in userIds)
                 {
-                    var basket = await _repository.GetBasketAsync(id);
+                    var basket = _repository.GetBasketAsync(id).Result;
 
-                    await UpdatePriceInBasketItems(@event.ProductId, @event.NewPrice, @event.OldPrice, basket);
+                    UpdatePriceInBasketItems(@event.ProductId, @event.NewPrice, @event.OldPrice, basket);
                 }
             }
         }
 
-        private async Task UpdatePriceInBasketItems(int productId, decimal newPrice, decimal oldPrice, CustomerBasket basket)
+        private void UpdatePriceInBasketItems(int productId, decimal newPrice, decimal oldPrice, CustomerBasket basket)
         {
             var itemsToUpdate = basket?.Items?.Where(x => x.ProductId == productId).ToList();
 
@@ -56,7 +56,7 @@ namespace Microsoft.eShopOnContainers.Services.Basket.API.IntegrationEvents.Even
                         item.OldUnitPrice = originalPrice;
                     }
                 }
-                await _repository.UpdateBasketAsync(basket);
+                _repository.UpdateBasketAsync(basket).Wait();
             }
         }
     }
