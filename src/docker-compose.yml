@@ -102,7 +102,6 @@ services:
       dockerfile: ApiGateways/Web.Bff.Shopping/aggregator/Dockerfile
     depends_on:
       - nosqldata
-      - sqldata
       # - identity-api
       - rabbitmq
       - ordering-api
