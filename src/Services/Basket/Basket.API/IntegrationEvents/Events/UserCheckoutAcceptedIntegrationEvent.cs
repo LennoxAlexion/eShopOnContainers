@@ -36,7 +36,7 @@ namespace Basket.API.IntegrationEvents.Events
 
         public Guid RequestId { get; init; }
 
-        public CustomerBasket Basket { get; }
+        public CustomerBasket Basket { get; set; }
         public Guid PUReqId { get; private init; }
         public int SeqId { get; private init; }
 
@@ -62,6 +62,11 @@ namespace Basket.API.IntegrationEvents.Events
             RequestId = requestId;
             PUReqId = puReqId;
             SeqId = seqId;
+        }
+
+        public void UpdateBasket(CustomerBasket basket)
+        {
+            Basket = basket;
         }
 
     }

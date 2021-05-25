@@ -87,12 +87,14 @@ namespace Microsoft.eShopOnContainers.Services.Basket.API.Infrastructure.Reposit
         seqIdOperationDict.TryAdd(seqId, operation);
         IBasketRepository.waitingOperations.TryAdd(itemId, seqIdOperationDict);
       }
-      if(operation.Item2 == null){
-        _logger.LogError("UpdateWaitingOperations (PU) -> itemId = {itemId}; SeqId = {seqId}; waitOpsCount = {waitOp} ", itemId, seqId, IBasketRepository.waitingOperations.Count); 
+      if (operation.Item2 == null)
+      {
+        _logger.LogError("UpdateWaitingOperations (PU) -> itemId = {itemId}; SeqId = {seqId}; waitOpsCount = {waitOp} ", itemId, seqId, IBasketRepository.waitingOperations.Count);
       }
 
-      if(operation.Item1 == null){
-        _logger.LogError("UpdateWaitingOperations (CO) -> itemId = {itemId}; SeqId = {seqId}; waitOpsCount = {waitOp} ", itemId, seqId, IBasketRepository.waitingOperations.Count); 
+      if (operation.Item1 == null)
+      {
+        _logger.LogError("UpdateWaitingOperations (CO) -> itemId = {itemId}; SeqId = {seqId}; waitOpsCount = {waitOp} ", itemId, seqId, IBasketRepository.waitingOperations.Count);
       }
     }
 
@@ -121,13 +123,13 @@ namespace Microsoft.eShopOnContainers.Services.Basket.API.Infrastructure.Reposit
             {
               // Execute Price Update
               _logger.LogError("ExecuteOperations: Process PU -> itemID = {itemId}, SeqId = {seqId}, newPrice = {newPrice}", itemId, seqId, operation.Item1.NewPrice);
-              processPriceUpdate(operation.Item1);
+              processPriceUpdate(operation.Item1).Wait();
             }
             else if (operation.Item2 != null)
             {
               // Execute Checkout
               _logger.LogError("ExecuteOperations: Process Checkout -> itemID = {itemId}, SeqId = {seqId}, checkout = {operation}", itemId, seqId, operation.Item2.PUReqId);
-              processCheckout(operation.Item2);
+              processCheckout(operation.Item2).Wait();
             }
             seqId++;
             IBasketRepository.executionOrder[itemId] = seqId;
@@ -170,15 +172,16 @@ namespace Microsoft.eShopOnContainers.Services.Basket.API.Infrastructure.Reposit
       }
     }
 
-    private void processCheckout(UserCheckoutAcceptedIntegrationEvent checkoutData)
+    private async Task processCheckout(UserCheckoutAcceptedIntegrationEvent checkoutData)
     {
       _logger.LogWarning("Checking out user counter: " + checkoutData.UserId);
-
-      var eventMessage = checkoutData;
-
       // Once basket is checkout, sends an integration event to
       // ordering.api to convert basket to order and proceeds with
       // order creation process
+      // Get the latest basket.
+      var basket = await GetBasketAsync(checkoutData.UserId);
+      checkoutData.UpdateBasket(basket);
+      var eventMessage = checkoutData;
       try
       {
         IBasketRepository.eventBus.Publish(eventMessage);
