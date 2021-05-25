@@ -28,35 +28,17 @@ namespace Microsoft.eShopOnContainers.Services.Basket.API.IntegrationEvents.Even
             {
                 _logger.LogInformation("----- Handling integration event: {IntegrationEventId} at {AppName} - ({@IntegrationEvent})", @event.Id, Program.AppName, @event);
 
-                var userIds = _repository.GetUsers();
-
-                foreach (var id in userIds)
+                // init executionOrder
+                if(!IBasketRepository.executionOrder.ContainsKey(@event.ProductId))
                 {
-                    var basket = _repository.GetBasketAsync(id).Result;
-
-                    UpdatePriceInBasketItems(@event.ProductId, @event.NewPrice, @event.OldPrice, basket);
+                    IBasketRepository.executionOrder.TryAdd(@event.ProductId, 1);
                 }
-            }
-        }
 
-        private void UpdatePriceInBasketItems(int productId, decimal newPrice, decimal oldPrice, CustomerBasket basket)
-        {
-            var itemsToUpdate = basket?.Items?.Where(x => x.ProductId == productId).ToList();
+                // Update Waiting Operations
+                _repository.UpdateWaitingOperations(@event.ProductId, @event.SeqId, (@event, null));
 
-            if (itemsToUpdate != null)
-            {
-                _logger.LogInformation("----- ProductPriceChangedIntegrationEventHandler - Updating items in basket for user: {BuyerId} ({@Items})", basket.BuyerId, itemsToUpdate);
-
-                foreach (var item in itemsToUpdate)
-                {
-                    if (item.UnitPrice == oldPrice)
-                    {
-                        var originalPrice = item.UnitPrice;
-                        item.UnitPrice = newPrice;
-                        item.OldUnitPrice = originalPrice;
-                    }
-                }
-                _repository.UpdateBasketAsync(basket).Wait();
+                // Execute Operations
+                _repository.ExecuteOperations(@event.ProductId);
             }
         }
     }

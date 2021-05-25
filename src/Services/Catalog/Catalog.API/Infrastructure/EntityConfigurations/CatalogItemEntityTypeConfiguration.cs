@@ -34,6 +34,10 @@ namespace Microsoft.eShopOnContainers.Services.Catalog.API.Infrastructure.Entity
             builder.HasOne(ci => ci.CatalogType)
                 .WithMany()
                 .HasForeignKey(ci => ci.CatalogTypeId);
+
+            builder.Ignore(ci => ci.PuReqId);
+
+            builder.Ignore(ci => ci.SeqId);
         }
     }
 }

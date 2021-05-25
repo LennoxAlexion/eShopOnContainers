@@ -12,12 +12,14 @@ namespace Microsoft.eShopOnContainers.Services.Basket.API.IntegrationEvents.Even
         public decimal NewPrice { get; private init; }
 
         public decimal OldPrice { get; private init; }
+        public int SeqId { get; private init; }
 
-        public ProductPriceChangedIntegrationEvent(int productId, decimal newPrice, decimal oldPrice)
+        public ProductPriceChangedIntegrationEvent(int productId, decimal newPrice, decimal oldPrice, int seqId)
         {
             ProductId = productId;
             NewPrice = newPrice;
             OldPrice = oldPrice;
+            SeqId = seqId;
         }
     }
 }

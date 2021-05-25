@@ -37,11 +37,13 @@ namespace Basket.API.IntegrationEvents.Events
         public Guid RequestId { get; init; }
 
         public CustomerBasket Basket { get; }
+        public Guid PUReqId { get; private init; }
+        public int SeqId { get; private init; }
 
         public UserCheckoutAcceptedIntegrationEvent(string userId, string userName, string city, string street,
             string state, string country, string zipCode, string cardNumber, string cardHolderName,
             DateTime cardExpiration, string cardSecurityNumber, int cardTypeId, string buyer, Guid requestId,
-            CustomerBasket basket)
+            CustomerBasket basket, Guid puReqId, int seqId)
         {
             UserId = userId;
             UserName = userName;
@@ -58,6 +60,8 @@ namespace Basket.API.IntegrationEvents.Events
             Buyer = buyer;
             Basket = basket;
             RequestId = requestId;
+            PUReqId = puReqId;
+            SeqId = seqId;
         }
 
     }

@@ -31,6 +31,9 @@ namespace Microsoft.eShopOnContainers.Services.Catalog.API.Model
         // Available stock at which we should reorder
         public int RestockThreshold { get; set; }
 
+        public int SeqId { get; set; }
+
+        public Guid PuReqId {get; set; }
 
         // Maximum number of units that can be in-stock at any time (due to physicial/logistical constraints in warehouses)
         public int MaxStockThreshold { get; set; }

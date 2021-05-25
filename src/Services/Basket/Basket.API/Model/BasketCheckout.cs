@@ -27,6 +27,10 @@ namespace Basket.API.Model
         public string Buyer { get; set; }
 
         public Guid RequestId { get; set; }
+
+        public Guid PuReqId {get; set; }
+
+        public int seqId {get; set; }
     }
 }
 
