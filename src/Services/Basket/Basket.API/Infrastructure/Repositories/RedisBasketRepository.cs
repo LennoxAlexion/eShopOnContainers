@@ -190,7 +190,7 @@ namespace Microsoft.eShopOnContainers.Services.Basket.API.Infrastructure.Reposit
       {
         _logger.LogError(ex, "ERROR Publishing integration event: {IntegrationEventId} from {AppName}", eventMessage.Id, Program.AppName);
 
-        throw;
+        return;
       }
     }
   }
